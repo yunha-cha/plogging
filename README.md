@@ -75,10 +75,10 @@ logging:
 테이블의 컬럼을 바꾸고 싶다면 ```com/website/entity/User.java```에서 변경할 수 있습니다.  
 **컬럼을 변경하려면 JWT 토큰 설정 등 여러 설정을 변경할 수 있어야합니다.**
 1. 테이블 명: **user**  
-2. 컬럼
+ 컬럼
 
    | 컬럼명               | 타입              | 설명              |
-   | ----------------- | --------------- | --------------- |
+   | ----------------- |-----------------|-----------------|
    | `user_code`       | BIGINT (PK, AI) | 유저 고유 키         |
    | `user_id`         | VARCHAR         | 로그인 ID (Unique) |
    | `nickname`        | VARCHAR         | 닉네임 (Unique)    |
@@ -89,6 +89,10 @@ logging:
    | `create_at`       | DATETIME        | 가입일             |
    | `last_login_time` | DATETIME        | 마지막 로그인 시간      |
    | `enable`          | BOOLEAN         | 계정 활성 여부        |
+   | `oauth_provider`  | VARCHAR         | 소셜 로그인 담당자      |
+   | `oauthId`  | VARCHAR         | 소셜 로그인 유일 값     |
+   | `email`  | VARCHAR         | 이메일             |
+   | `name`  | VARCHAR         | 이름(실명)          |
 
 
 ### 요청 URL별 인증, 인가 여부 
