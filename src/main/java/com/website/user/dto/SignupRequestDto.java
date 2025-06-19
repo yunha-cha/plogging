@@ -1,4 +1,4 @@
-package com.website.security.dto;
+package com.website.user.dto;
 
 import lombok.*;
 

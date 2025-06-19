@@ -3,13 +3,11 @@ package com.website.security.config;
 import com.website.security.jwt.JWTFilter;
 import com.website.security.jwt.JWTUtil;
 import com.website.security.jwt.LoginFilter;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.website.security.jwt.OAuth2SuccessHandler;
+import com.website.security.service.CustomOidcUserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -19,12 +17,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.io.IOException;
 import java.util.Collections;
 
 @Configuration
@@ -33,10 +28,14 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
     @Value("${custom.setting.cors}")
     private String cors;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final CustomOidcUserService customOidcUserService;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, OAuth2SuccessHandler oAuth2SuccessHandler, CustomOidcUserService customOidcUserService) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
+        this.oAuth2SuccessHandler = oAuth2SuccessHandler;
+        this.customOidcUserService = customOidcUserService;
     }
 
     @Bean
@@ -54,13 +53,48 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
-                // 이 체인은 /api/** 에만 매칭
-                .securityMatcher("/api/**","/login","/favicon.ico")
+                .securityMatcher(
+                        "/api/**",
+                        "/login/**",               // 기존 로그인
+                        "/favicon.ico",
+                        "/oauth2/**",              // OAuth2 인가요청, 콜백 모두 포함
+                        "/login/oauth2/**"
+                )
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfig()))
-                // /api/** 에 대해서는 모두 허용
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .addFilterAt(new LoginFilter(authenticationManager(),jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .authorizeHttpRequests(auth -> auth
+                        // 퍼블릭으로 열어둘 URL들
+                        .requestMatchers(
+                                "/api/**",
+                                "/login/**",
+                                "/oauth2/authorization/google",        // 구글 인가 요청
+                                "/login/oauth2/code/google",           // 구글 콜백
+                                "/favicon.ico"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                // 기존 로그인 필터
+                .addFilterAt(new LoginFilter(authenticationManager(), jwtUtil),
+                        UsernamePasswordAuthenticationFilter.class)
+                // OAuth2 로그인 설정
+                .oauth2Login(oauth2 -> oauth2
+                        // 인가 코드 받으러 보낼 URI
+                        .authorizationEndpoint(authz ->
+                                authz.baseUri("/oauth2/authorization"))
+                        // 구글이 콜백을 보낼 URI
+                        .redirectionEndpoint(redir ->
+                                redir.baseUri("/login/oauth2/code/*"))
+                        // UserInfo 로부터 프로필 추출 → 매핑
+                        .userInfoEndpoint(ui ->
+                                ui.oidcUserService(customOidcUserService))
+                        // 성공 시 JWT 발급 핸들러
+                        .successHandler(oAuth2SuccessHandler)
+                        // 실패 시 리다이렉트/로깅 필요하면 설정
+                        .failureHandler((req, res, ex) -> {
+                            res.sendRedirect("/login?error");
+                        })
+                );
+
         return http.build();
     }
 

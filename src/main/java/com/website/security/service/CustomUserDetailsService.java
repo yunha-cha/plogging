@@ -2,7 +2,7 @@ package com.website.security.service;
 
 import com.website.entity.User;
 import com.website.repository.UserRepository;
-import com.website.security.dto.CustomUserDetails;
+import com.website.user.dto.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -2,7 +2,7 @@ package com.website.security.jwt;
 
 
 
-import com.website.security.dto.CustomUserDetails;
+import com.website.user.dto.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,7 +1,7 @@
-package com.website.security.controller;
+package com.website.security.testcontroller;
 
 
-import com.website.security.dto.CustomUserDetails;
+import com.website.user.dto.CustomUserDetails;
 import com.website.security.jwt.JWTUtil;
 import com.website.security.service.CustomUserDetailsService;
 import org.springframework.http.HttpStatus;

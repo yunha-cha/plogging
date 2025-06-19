@@ -46,6 +46,18 @@ public class User { //User 테이블
     @Column
     private boolean enable;
 
+    @Column(name = "oauth_provider")
+    private String oauthProvider;
+
+    @Column(name = "oauth_id")
+    private String oauthId;
+
+    @Column
+    private String email;
+
+    @Column(name = "name")
+    private String name;
+
     //회원 가입용 생성자
     public User(String userId, String nickname, String password, String role, LocalDateTime createAt, boolean enable) {
         this.userId = userId;

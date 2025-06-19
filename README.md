@@ -4,6 +4,7 @@
 크게 사용 가능한 기능은 아래와 같습니다.
 
 - 회원가입
+- 구글 소셜 로그인
 - 로그인
 - JWT 토큰 발행
 - JWT 토큰 검증
@@ -38,7 +39,14 @@ spring:
   devtools:
     restart:
       enabled: false
-
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 발급받은 client id
+            client-secret: 발급받은 클라이언트 보안 비밀번호
+            scope: openid,profile,email
   # jpa config
   jpa:
     hibernate:
@@ -59,7 +67,9 @@ logging:
 
 
 ## 알아야할 정보들
-먼저 모든 Java script 예제 코드는 axios 라이브러리를 사용합니다. 없다면 설치하고 진행하세요. 
+먼저 모든 Java script 예제 코드는 axios 라이브러리를 사용합니다. 없다면 설치하고 진행하세요.   
+<div style="color:#ff6a6a; font-weight: bolder">만약 구글 소셜 로그인을 제외하고 싶다면 ```Default``` branch를 pull 하세요.</div>
+
 ### 유저 테이블 생성
 ```resources/application.yml``` 세팅에 의하여 아래의 테이블을 자동으로 생성합니다.  
 테이블의 컬럼을 바꾸고 싶다면 ```com/website/entity/User.java```에서 변경할 수 있습니다.  

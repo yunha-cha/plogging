@@ -2,7 +2,7 @@ package com.website.user;
 
 import com.website.entity.User;
 import com.website.repository.UserRepository;
-import com.website.security.dto.SignupRequestDto;
+import com.website.user.dto.SignupRequestDto;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 

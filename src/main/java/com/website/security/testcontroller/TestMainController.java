@@ -1,10 +1,9 @@
-package com.website.security.controller;
+package com.website.security.testcontroller;
 
-import com.website.security.dto.CustomUserDetails;
+import com.website.user.dto.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

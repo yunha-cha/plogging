@@ -1,4 +1,4 @@
-package com.website.security.dto;
+package com.website.user.dto;
 
 import com.website.entity.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,7 +25,7 @@ public class CustomUserDetails implements UserDetails {
         });
         return collection;
     }
-
+    public String getRole(){return user.getRole();}
     public Long getUserCode() {
         return user.getUserCode();
     }

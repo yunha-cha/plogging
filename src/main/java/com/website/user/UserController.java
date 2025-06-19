@@ -1,6 +1,6 @@
 package com.website.user;
 
-import com.website.security.dto.SignupRequestDto;
+import com.website.user.dto.SignupRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
