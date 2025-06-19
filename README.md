@@ -181,6 +181,59 @@ const authUrlRequestTest = async () => {
   2. ```userId``` : 유저 아이디
   3. ```role``` : 유저 권한
 
+### 실제 테스트
+간단히 테스트 해볼 수 있는 React Component의 전체 코드는 아래와 같습니다.  
+직접 React코드를 수정해서 여러 요청을 해보세요.
+<details>
+<summary>React 테스트 코드</summary>
+
+```javascript
+import axios from 'axios'
+
+function App() {
+  const signupTest = () => {
+    const f = new FormData();
+    f.append('userId', 'test');
+    f.append('nickname', 'testNickname');
+    f.append('password', 'test')
+    const res = axios.post('http://localhost:8080/api/user/signup', f);
+  }
+  const loginTest = async () => {
+    const f = new FormData();
+    f.append('username', 'test');
+    f.append('password', 'test');
+    const res = await axios.post('http://localhost:8080/login', f);
+    console.log(res.headers["authorization"]);
+
+  }
+  const openUrlRequestTest = async () => {
+    const res = await axios.get('http://localhost:8080/api/test');
+    console.log(res);
+  }
+  const authUrlRequestTest = async () => {
+    const res = await axios.get('http://localhost:8080/auth/test', {
+      headers: {
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50Q29kZSI6MSwiYWNjb3VudElkIjoidGVzdCIsImFjY291bnRSb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzUwMjg5OTQ0LCJleHAiOjE3NTAzMjU5NDR9.tEQwVIuT8jvKlf-Qgel-2v6tpHAdIBGXjNCt0qHaU08'
+      }
+    });
+    console.log(res);
+  }
+  return (
+    <div>
+      <button onClick={signupTest}>회원가입</button>
+      <button onClick={loginTest}>로그인</button>
+      <button onClick={openUrlRequestTest}>open api 경로</button>
+      <button onClick={authUrlRequestTest}>일반 경로</button>
+      <a href="http://localhost:8080/oauth2/authorization/google">
+        <button>Google로 로그인하기</button>
+      </a>
+    </div>
+  )
+}
+
+export default App
+```
+</details>
 
 
 ### 의존성
@@ -192,6 +245,7 @@ const authUrlRequestTest = async () => {
 - Spring devtools
 - WebSocket
 - JWT 0.12.3
+- oauth2-client
 
 ### 테스트
 - Postman
