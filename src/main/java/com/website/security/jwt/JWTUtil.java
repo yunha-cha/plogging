@@ -24,14 +24,14 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
     }
     public Long getUserCode(String token) {
-        return getInfo(token).get("accountCode",Long.class);
+        return getInfo(token).get("userCode",Long.class);
     }
 
     public String getUsername(String token){
-        return getInfo(token).get("accountId",String.class);
+        return getInfo(token).get("userId",String.class);
     }
     public String getRole(String token){
-        return getInfo(token).get("accountRole",String.class);
+        return getInfo(token).get("role",String.class);
     }
 
     public Boolean isExpired(String token){

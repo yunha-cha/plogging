@@ -54,7 +54,7 @@ public class JWTFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authToken);
 
             filterChain.doFilter(request, response);
-        } catch (AuthenticationException e){
+        } catch (AuthenticationException | AccessDeniedException e){
             SecurityContextHolder.clearContext();
             // 직접 401 처리
             response.setContentType("application/json;charset=UTF-8");
